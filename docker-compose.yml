@@ -2,29 +2,29 @@ version: "3.7"
 services:
 
   nats1:
-    image: nats:2.1.9
+    image: nats:2.7.2-scratch
     ports: 
       - 4222:4222
       - 8222:8222
     networks:
       - natsnet
-    command: "--cluster nats://0.0.0.0:6222 --routes nats://nats3:6222"
+    command: "-js --server_name nats1 --cluster_name nats --cluster nats://0.0.0.0:6222 --routes nats://nats3:6222,nats://nats2:6222"
   nats2:
-    image: nats:2.1.9
+    image: nats:2.7.2-scratch
     ports: 
       - 14222:4222
       - 18222:8222
     networks:
       - natsnet
-    command: "--cluster nats://0.0.0.0:6222 --routes nats://nats1:6222"
+    command: "-js --server_name nats2 --cluster_name nats --cluster nats://0.0.0.0:6222 --routes nats://nats1:6222,nats://nats3:6222"
   nats3:
-    image: nats:2.1.9
+    image: nats:2.7.2-scratch
     ports: 
       - 24222:4222
       - 28222:8222
     networks:
       - natsnet
-    command: "--cluster nats://0.0.0.0:6222 --routes nats://nats2:6222"
+    command: "-js --server_name nats3 --cluster_name nats --cluster nats://0.0.0.0:6222 --routes nats://nats1:6222,nats://nats2:6222"
 
   nats-streaming1:
     image: nats-streaming:0.19
@@ -67,6 +67,5 @@ services:
 
 networks:
   natsnet:
-    external: true
     name: natsnet
     driver: bridge
