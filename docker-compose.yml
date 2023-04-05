@@ -6,9 +6,12 @@ services:
     ports: 
       - 4222:4222
       - 8222:8222
+      - 8502:8502
     networks:
       - natsnet
-    command: "-js --server_name nats1 --cluster_name nats --cluster nats://0.0.0.0:6222 --routes nats://nats3:6222,nats://nats2:6222"
+    volumes:
+      - ./config/nats.conf:/etc/nats/nats.conf  
+    command: "-config /etc/nats/nats.conf --server_name nats1"
   nats2:
     image: nats:2.7.2-scratch
     ports: 
@@ -16,7 +19,10 @@ services:
       - 18222:8222
     networks:
       - natsnet
-    command: "-js --server_name nats2 --cluster_name nats --cluster nats://0.0.0.0:6222 --routes nats://nats1:6222,nats://nats3:6222"
+    volumes:
+      - ./config/nats.conf:/etc/nats/nats.conf  
+    command: "-config /etc/nats/nats.conf --server_name nats2"
+#    command: "-js --server_name nats2 --cluster_name nats --cluster nats://0.0.0.0:6222 --routes nats://nats1:6222,nats://nats3:6222"
   nats3:
     image: nats:2.7.2-scratch
     ports: 
@@ -24,7 +30,10 @@ services:
       - 28222:8222
     networks:
       - natsnet
-    command: "-js --server_name nats3 --cluster_name nats --cluster nats://0.0.0.0:6222 --routes nats://nats1:6222,nats://nats2:6222"
+    volumes:
+      - ./config/nats.conf:/etc/nats/nats.conf  
+    command: "-config /etc/nats/nats.conf --server_name nats3"
+#    command: "-js --server_name nats3 --cluster_name nats --cluster nats://0.0.0.0:6222 --routes nats://nats1:6222,nats://nats2:6222"
 
   nats-streaming1:
     image: nats-streaming:0.19
